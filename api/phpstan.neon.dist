@@ -1,0 +1,26 @@
+includes:
+    - phar://phpstan.phar/conf/bleedingEdge.neon
+parameters:
+    level: max
+    inferPrivatePropertyTypeFromConstructor: true
+#    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+#       Method App\Entity\Station\StationEntityType::getStations() return
+#         type with generic interface Doctrine\Common\Collections\Collection
+#         does not specify its types: TKey, T
+#         💡 You can turn this off by setting
+#         checkGenericClassInNonGenericObjectType: false in your phpstan.neon.
+
+    paths:
+        - %currentWorkingDirectory%/src/
+    dynamicConstantNames:
+        - APP_DEBUG
+
+#    excludes_analyse:
+#        - test/*
+#        - runtime/*
+#        - resource/*
+    ignoreErrors:
+        # Variable type
+#        - '#.+onstant APP_DEBUG not found.#'
+ #      - '#Property App\\Model\\Dao\\Api\\Schema[\\[a-zA-Z]*\\[a-zA-Z]+Schema::(\$type|\$id|\$attributes|\$code|\$title) is unused\.#'
