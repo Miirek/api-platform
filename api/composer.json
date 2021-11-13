@@ -85,7 +85,7 @@
         "test": [
             "php ./vendor/bin/phpcs --severity=1 --standard=phpcs.xml.dist",
             "php ./vendor/bin/phpstan analyse src/ --level max -a ./vendor/autoload.php",
-            "./vendor/bin/simple-phpunit -c phpunit.xml.dist --coverage-text"
+            "export  XDEBUG_MODE=coverage && ./vendor/bin/simple-phpunit -c phpunit.xml.dist --coverage-text --coverage-clover clover.xml "
         ],
         "fix": [
             "php ./vendor/bin/phpcbf --severity=1 --standard=phpcs.xml.dist"

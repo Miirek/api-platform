@@ -11,14 +11,20 @@ ARG CADDY_VERSION=2
 FROM php:${PHP_VERSION}-fpm-alpine AS api_platform_php
 
 # persistent / runtime deps
-RUN apk add --no-cache \
+RUN apk update \
+    && apk add --no-cache \
 		acl \
 		fcgi \
 		file \
 		gettext \
 		git \
 		gnu-libiconv \
-	;
+		autoconf \
+    	g++ \
+    	make
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
 
 # install gnu-libiconv and set LD_PRELOAD env to make iconv work fully on Alpine image.
 # see https://github.com/docker-library/php/issues/240#issuecomment-763112749
