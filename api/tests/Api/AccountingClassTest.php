@@ -13,7 +13,6 @@ use Doctrine\ORM\Tools\SchemaTool;
 class AccountingClassTest extends ApiTestCase
 {
 
-
 	protected function setUp(): void
 	{
 		$kernel = self::bootKernel();
@@ -23,12 +22,10 @@ class AccountingClassTest extends ApiTestCase
 			->get('doctrine')
 			->getManager();
 
-
 		$schemaTool = new SchemaTool($entityManager);
 
 		/** @var ClassMetadata $metadata */
 		$metadata = $entityManager->getMetadataFactory()->getAllMetadata();
-
 
 		$schemaTool->dropSchema($metadata);
 		$schemaTool->createSchema($metadata);

@@ -5,22 +5,28 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Repository\AccountingGroupRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(name="accounting_group")
  * @ORM\Entity(repositoryClass=AccountingGroupRepository::class)
- * @ApiResource
+ * @ApiResource(
+ *      collectionOperations={"get","post"},
+ *     itemOperations={
+ *     "get",
+ *      "put",
+ *     "delete"
+ *    },
+ *     shortName="groups"
+ *  )
  */
-class AccountingGroup
+class AccountingGroup extends BaseEntity
 {
 	use IntIdentifier;
-
-	/**
-	 * @ORM\ManyToOne(targetEntity="AccountingClass", inversedBy="groups", fetch="EXTRA_LAZY")
-	 * @ORM\JoinColumn(name="class", referencedColumnName="ident",onDelete="CASCADE")
-	 */
-	private AccountingClass $class;
 
 	/** @ORM\Column(type="string", length=1) */
 	private string $ident;
@@ -28,25 +34,25 @@ class AccountingGroup
 	/** @ORM\Column(type="string", length=255) */
 	private string $name;
 
+	/**
+	 * @ORM\ManyToOne(targetEntity=AccountingClass::class, inversedBy="accountingGroups")
+	 * @ORM\JoinColumn(nullable=false,onDelete="CASCADE")
+	 */
+	private ?AccountingClass $accountingClass;
+
+	/**
+	 * @ORM\OneToMany(targetEntity=SyntheticAccount::class, mappedBy="accountingGroup", orphanRemoval=true)
+	 * @ApiSubresource()
+	 * @var Collection<SyntheticAccount>
+	 */
+	private Collection $syntheticAccounts;
+
+	public function __construct()
+	{
+		$this->syntheticAccounts = new ArrayCollection();
+	}
+
 	use Auditable;
-
-	/**
-	 * @return AccountingClass
-	 */
-	public function getClass(): AccountingClass
-	{
-		return $this->class;
-	}
-
-	/**
-	 * @param AccountingClass $class
-	 * @return AccountingGroup
-	 */
-	public function setClass(AccountingClass $class): AccountingGroup
-	{
-		$this->class = $class;
-		return $this;
-	}
 
 	public function getIdent(): ?string
 	{
@@ -68,6 +74,48 @@ class AccountingGroup
 	public function setName(string $name): self
 	{
 		$this->name = $name;
+
+		return $this;
+	}
+
+	public function getAccountingClass(): ?AccountingClass
+	{
+		return $this->accountingClass;
+	}
+
+	public function setAccountingClass(?AccountingClass $accountingClass): self
+	{
+		$this->accountingClass = $accountingClass;
+
+		return $this;
+	}
+
+	/**
+	 * @return Collection|SyntheticAccount[]
+	 */
+	public function getSyntheticAccounts(): Collection
+	{
+		return $this->syntheticAccounts;
+	}
+
+	public function addSyntheticAccount(SyntheticAccount $syntheticAccount): self
+	{
+		if (!$this->syntheticAccounts->contains($syntheticAccount)) {
+			$this->syntheticAccounts[] = $syntheticAccount;
+			$syntheticAccount->setAccountingGroup($this);
+		}
+
+		return $this;
+	}
+
+	public function removeSyntheticAccount(SyntheticAccount $syntheticAccount): self
+	{
+		if ($this->syntheticAccounts->removeElement($syntheticAccount)) {
+			// set the owning side to null (unless already changed)
+			if ($syntheticAccount->getAccountingGroup() === $this) {
+				$syntheticAccount->setAccountingGroup(null);
+			}
+		}
 
 		return $this;
 	}

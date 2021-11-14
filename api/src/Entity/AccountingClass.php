@@ -14,9 +14,17 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Table(name="accounting_class")
  * @ORM\Entity(repositoryClass=AccountingClassRepository::class)
- * @ApiResource(mercure="true")
+ * @ApiResource(mercure="true",
+ *      collectionOperations={"get","post"},
+ *     itemOperations={
+ *     "get",
+ *      "put",
+ *     "delete"
+ *    },
+ *     shortName="classes"
+ * )
  */
-class AccountingClass
+class AccountingClass extends BaseEntity
 {
 	use IntIdentifier;
 
@@ -27,18 +35,19 @@ class AccountingClass
 	private string $name;
 
 	/**
-	 * @ORM\OneToMany(targetEntity=AccountingGroup::class, mappedBy="class", fetch="EXTRA_LAZY")
-	 * @var Collection<AccountingGroup>
+	 * @ORM\OneToMany(targetEntity=AccountingGroup::class, mappedBy="accountingClass")
+	 *
 	 * @ApiSubresource()
+	 * @var Collection<AccountingGroup>
 	 */
-	private Collection $groups;
-
-	use Auditable;
+	private Collection $accountingGroups;
 
 	public function __construct()
 	{
-		$this->groups = new ArrayCollection();
+		$this->accountingGroups = new ArrayCollection();
 	}
+
+	use Auditable;
 
 	public function getIdent(): ?string
 	{
@@ -64,27 +73,32 @@ class AccountingClass
 		return $this;
 	}
 
-	public function getGroups(): Collection
+	/**
+	 * @return Collection<AccountingGroup>
+	 */
+	public function getAccountingGroups(): Collection
 	{
-		return $this->groups;
+		return $this->accountingGroups;
 	}
 
-	/**
-	 * @param AccountingGroup[] $groups
-	 * @return $this
-	 */
-	public function setGroups(array $groups): AccountingClass
+	public function addAccountingGroup(AccountingGroup $accountingGroup): self
 	{
-		$this->groups->clear();
-		foreach ($groups as $group) {
-			$this->groups->add($group);
+		if (!$this->accountingGroups->contains($accountingGroup)) {
+			$this->accountingGroups[] = $accountingGroup;
+			$accountingGroup->setAccountingClass($this);
 		}
+
 		return $this;
 	}
 
-	public function addGroup(AccountingGroup $group): AccountingClass
+	public function removeAccountingGroup(AccountingGroup $accountingGroup): self
 	{
-		$this->groups->add($group);
+		if ($this->accountingGroups->removeElement($accountingGroup)) {
+			// set the owning side to null (unless already changed)
+			if ($accountingGroup->getAccountingClass() === $this) {
+				$accountingGroup->setAccountingClass(null);
+			}
+		}
 
 		return $this;
 	}

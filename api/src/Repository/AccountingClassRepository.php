@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\AccountingClass;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,7 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method AccountingClass[]    findAll()
  * @method AccountingClass[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AccountingClassRepository extends ServiceEntityRepository
+class AccountingClassRepository extends BaseRepository
 {
 	public function __construct(ManagerRegistry $registry)
 	{

@@ -4,25 +4,25 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Entity\AccountingGroup;
+use App\Entity\AnalyticAccount;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method AccountingGroup|null find($id, $lockMode = null, $lockVersion = null)
- * @method AccountingGroup|null findOneBy(array $criteria, array $orderBy = null)
- * @method AccountingGroup[]    findAll()
- * @method AccountingGroup[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method AnalyticAccount|null find($id, $lockMode = null, $lockVersion = null)
+ * @method AnalyticAccount|null findOneBy(array $criteria, array $orderBy = null)
+ * @method AnalyticAccount[]    findAll()
+ * @method AnalyticAccount[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AccountingGroupRepository extends BaseRepository
+class AnalyticAccountRepository extends BaseRepository
 {
 	public function __construct(ManagerRegistry $registry)
 	{
-		parent::__construct($registry, AccountingGroup::class);
+		parent::__construct($registry, AnalyticAccount::class);
 	}
 
 	// /**
-	//  * @return AccountingGroup[] Returns an array of AccountingGroup objects
+	//  * @return AnalyticAccount[] Returns an array of AnalyticAccount objects
 	//  */
 	/*
 	public function findByExampleField($value)
@@ -39,7 +39,7 @@ class AccountingGroupRepository extends BaseRepository
 	*/
 
 	/*
-	public function findOneBySomeField($value): ?AccountingGroup
+	public function findOneBySomeField($value): ?AnalyticAccount
 	{
 		return $this->createQueryBuilder('a')
 			->andWhere('a.exampleField = :val')
